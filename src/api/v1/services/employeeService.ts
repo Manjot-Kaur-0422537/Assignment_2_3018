@@ -1,4 +1,4 @@
-import { Employee, employees } from "../data/employees";
+import { Employee, employees } from "src/data/employees";
 
 // Get all employees
 export function getAllEmployees(): Employee[] {
