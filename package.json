@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --passWithNoTests",
+    "dev": "ts-node src/server.ts"
   },
   "repository": {
     "type": "git",
