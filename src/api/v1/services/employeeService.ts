@@ -1,35 +1,45 @@
-import { Employee, employees } from "src/data/employees";
+interface Employee {
+  id: number;
+  name: string;
+  position: string;
+  department: string;
+  email: string;
+  phone: string;
+  branchId: number;
+}
 
-// Get all employees
-export function getAllEmployees(): Employee[] {
+let employees: Employee[] = [];
+let currentId = 1;
+
+// GET all employees
+export function getAllEmployees() {
   return employees;
 }
 
-// Get employee by ID
-export function getEmployeeById(id: number): Employee | undefined {
+// GET by ID
+export function getEmployeeById(id: number) {
   return employees.find(emp => emp.id === id);
 }
 
-// Add new employee
-export function addEmployee(newEmployee: Employee): Employee {
+// ADD new employee
+export function addEmployee(data: Omit<Employee, "id">) {
+  const newEmployee: Employee = { id: currentId++, ...data };
   employees.push(newEmployee);
   return newEmployee;
 }
 
-// Update employee
-export function updateEmployee(id: number, updated: Partial<Employee>): Employee | null {
-  const index = employees.findIndex(emp => emp.id === id);
-  if (index === -1) return null;
-
-  employees[index] = { ...employees[index], ...updated };
-  return employees[index];
+// UPDATE
+export function updateEmployee(id: number, data: Partial<Employee>) {
+  const employee = employees.find(emp => emp.id === id);
+  if (!employee) return null;
+  Object.assign(employee, data);
+  return employee;
 }
 
-// Delete employee
-export function deleteEmployee(id: number): boolean {
+// DELETE
+export function deleteEmployee(id: number) {
   const index = employees.findIndex(emp => emp.id === id);
   if (index === -1) return false;
-
   employees.splice(index, 1);
   return true;
 }
