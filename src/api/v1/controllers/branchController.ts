@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getAllBranches, getBranchById, addBranch, updateBranch, deleteBranch } from "../services/branchService";
+import { Branch } from "../../../data/branches";
 
 export const createBranch = (req: Request, res: Response): Response => {
   const { name, address, phone } = req.body;
