@@ -1,4 +1,3 @@
-// src/api/v1/controllers/branchController.ts
 import { Request, Response } from "express";
 import { getAllBranches, getBranchById, addBranch, updateBranch, deleteBranch } from "../services/branchService";
 

@@ -16,7 +16,7 @@
         "alwaysStrict": true,
         "baseUrl": "./",
         "paths": {
-            "*": ["*"]
+            "src/*": ["src/*"]
         }
     },
     "include": ["src/**/*", "test/**/*", "config/**/*"],
