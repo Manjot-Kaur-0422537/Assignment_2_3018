@@ -4,7 +4,9 @@ import {
   getAllEmployees, 
   getEmployeeById, 
   updateEmployee, 
-  deleteEmployee 
+  deleteEmployee,
+  getEmployeesByBranch,
+  getEmployeesByDepartment
 } from "../controllers/employeeController";
 
 const router = Router();
@@ -14,5 +16,8 @@ router.get("/", getAllEmployees);
 router.get("/:id", getEmployeeById);
 router.put("/:id", updateEmployee);
 router.delete("/:id", deleteEmployee);
+
+router.get("/branch/:branchId", getEmployeesByBranch);
+router.get("/department/:department", getEmployeesByDepartment);
 
 export default router;

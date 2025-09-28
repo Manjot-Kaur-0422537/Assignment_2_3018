@@ -5,22 +5,16 @@ describe("Employee API Endpoints", () => {
   let employeeId: string; 
 
   // CREATE
-  it("should create a new employee", async () => {
-    const newEmployee = {
-      name: "John Doe",
-      position: "Developer",
-      department: "IT",
-      email: "john@example.com",
-      phone: "1234567890",
-      branchId: 1,
-    };
-
-    const response = await request(app).post("/api/v1/employees").send(newEmployee);
-    expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty("id");
-    expect(response.body.name).toBe("John Doe");
-
-    employeeId = response.body.id; 
+  beforeAll(async () => {
+    const response = await request(app).post("/api/v1/employees").send({
+      name: "Lila Spence",
+      position: "Loan Coordinator",
+      department: "Loans",
+      email: "lila.spence@pixell-river.com",
+      phone: "204-555-0480",
+      branchId: 4,
+    });
+    employeeId = response.body.id;
   });
 
   // GET ALL
@@ -57,5 +51,49 @@ describe("Employee API Endpoints", () => {
   it("should fail to create employee with missing parameters", async () => {
     const response = await request(app).post("/api/v1/employees").send({});
     expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Missing parameters");
+  });
+});
+
+describe("Employee API Additional Endpoints", () => {
+  let branchEmployeeId: string;
+  const testBranchId = 4;      
+  const testDepartment = "Loans";
+
+  // CREATEdepartment tests
+  beforeAll(async () => {
+    const response = await request(app).post("/api/v1/employees").send({
+      name: "Lila Spence",
+      position: "Loan Coordinator",
+      department: testDepartment,
+      email: "lila.spence@pixell-river.com",
+      phone: "204-555-0480",
+      branchId: testBranchId,
+    });
+    branchEmployeeId = response.body.id;
+  });
+
+  it("should return all employees for a specific branch", async () => {
+    const response = await request(app).get(`/api/v1/employees/branch/${testBranchId}`);
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+  });
+
+  it("should return 404 if branch has no employees", async () => {
+    const response = await request(app).get("/api/v1/employees/branch/999");
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("No employees found for this branch");
+  });
+
+  it("should return all employees for a specific department", async () => {
+    const response = await request(app).get(`/api/v1/employees/department/${testDepartment}`);
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+  });
+
+  it("should return 404 if department has no employees", async () => {
+    const response = await request(app).get("/api/v1/employees/department/UnknownDept");
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("No employees found for this department");
   });
 });

@@ -4,7 +4,12 @@ describe("Employee Service", () => {
   let employee: Employee;
 
   it("should create a new employee", () => {
-    employee = addEmployee({ name: "John Doe", position: "Manager" });
+    employee = addEmployee({
+      name: "John Doe", 
+      position: "Manager",
+      branchId: 1,
+      department: "IT" 
+    });
     expect(employee.id).toBeDefined();
     expect(employee.name).toBe("John Doe");
   });
@@ -32,3 +37,4 @@ describe("Employee Service", () => {
     expect(getEmployeeById(employee.id)).toBeUndefined();
   });
 });
+
