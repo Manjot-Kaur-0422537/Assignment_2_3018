@@ -14,7 +14,7 @@ describe("Branch Controller", () => {
   });
 
   it("should create a new branch", () => {
-    req.body = { name: "Toronto Branch", address: "440 Queen St W, Toronto, ON, M5V 2A8" };
+    req.body = { name: "Main Branch",  location: "Toronto" };
     createBranch(req as Request, res as Response);
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(
