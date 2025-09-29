@@ -8,7 +8,6 @@ export interface Employee {
 
 let employees: Employee[] = [];
 
-// Export functions individually so routes can import them
 export const getAllEmployees = () => employees;
 
 export const getEmployeeById = (id: string) =>

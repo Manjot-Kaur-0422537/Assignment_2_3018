@@ -1,4 +1,3 @@
-// Define an interface for Branch
 export interface Branch {
   id: number;
   name: string;
@@ -6,7 +5,6 @@ export interface Branch {
   phone: string;
 }
 
-// Sample branch data
 export const branches: Branch[] = [
   {
     id: 1,

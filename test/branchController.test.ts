@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { createBranch, getAllBranches } from "../src/api/v1/controllers/branchController";
-import { branchService } from "../src/api/v1/services/branchService";
 
 describe("Branch Controller", () => {
   let req: Partial<Request>;
@@ -15,7 +14,7 @@ describe("Branch Controller", () => {
   });
 
   it("should create a new branch", () => {
-    req.body = { name: "Main Branch", location: "Toronto" };
+    req.body = { name: "Toronto Branch", address: "440 Queen St W, Toronto, ON, M5V 2A8" };
     createBranch(req as Request, res as Response);
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(
