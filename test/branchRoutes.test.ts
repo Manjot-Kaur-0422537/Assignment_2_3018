@@ -9,12 +9,12 @@ app.use("/branches", branchRoutes);
 describe("Branch Routes", () => {
   it("POST /branches calls createBranch controller", async () => {
     const res = await request(app).post("/branches").send({
-      name: "Winnipeg Branch",
-      address: "1 Portage Ave, Winnipeg, MB, R3B 2B9",
-      phone: "204-988-2402"
+      name: "Main Branch",
+      address: "123 Street",
+      phone: "123-456-7890"
     });
     expect(res.status).toBe(201);
-    expect(res.body.name).toBe("Winnipeg Branch");
+    expect(res.body.name).toBe("Main Branch");
   });
 
   it("GET /branches calls getAllBranches controller", async () => {
