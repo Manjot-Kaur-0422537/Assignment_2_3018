@@ -6,26 +6,32 @@ import {
   updateEmployee as updateEmployeeService, 
   deleteEmployee as deleteEmployeeService 
 } from "../services/employeeService";
+import { successResponse, errorResponse } from "../models/responseModel";
+import { Employee } from "../models/employeeModel";
 
 // Create Employee
 export const createEmployee = (req: Request, res: Response) => {
-  const { name, position } = req.body;
-  if (!name || !position) {
-    return res.status(400).json({ message: "Missing parameters" });
+  try {
+    const { name, position } = req.body;
+    if (!name || !position) {
+      return res.status(400).json(errorResponse("Missing parameters"));
+    }
+    const employee = addEmployee(req.body);
+    res.status(201).json(successResponse(employee, "Employee created successfully"));
+  } catch (error) {
+    res.status(500).json(errorResponse("Failed to create employee"));
   }
-  const employee = addEmployee(req.body);
-  res.status(201).json(employee);
 };
 
 // Get all Employees
 export const getAllEmployees = (req: Request, res: Response) => {
-  const employees = getAllEmployeesService();
-  res.status(200).json(employees);
+  const employees: Employee[] = getAllEmployeesService();
+  res.status(200).json(successResponse(employees, "Employees retrieved successfully"));
 };
 
 // Get Employee by ID
 export const getEmployeeById = (req: Request, res: Response) => {
-  const employee = getEmployeeByIdService(req.params.id);
+  const employee: Employee | undefined = getEmployeeByIdService(req.params.id);
   if (!employee) return res.status(404).json({ message: "Employee not found" });
   res.status(200).json(employee);
 };
