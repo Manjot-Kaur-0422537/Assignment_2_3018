@@ -32,22 +32,22 @@ export const getAllEmployees = (req: Request, res: Response) => {
 // Get Employee by ID
 export const getEmployeeById = (req: Request, res: Response) => {
   const employee: Employee | undefined = getEmployeeByIdService(req.params.id);
-  if (!employee) return res.status(404).json({ message: "Employee not found" });
-  res.status(200).json(employee);
+  if (!employee) return res.status(404).json(errorResponse("Employee not found"));
+  res.status(200).json(successResponse(employee, "Employee retrieved successfully"));
 };
 
 // Update Employee
 export const updateEmployee = (req: Request, res: Response) => {
-  const employee = updateEmployeeService(req.params.id, req.body);
-  if (!employee) return res.status(404).json({ message: "Employee not found" });
-  res.status(200).json(employee);
+  const employee: Employee | null = updateEmployeeService(req.params.id, req.body);
+  if (!employee) return res.status(404).json(errorResponse("Employee not found"));
+  res.status(200).json(successResponse(employee, "Employee updated successfully"));
 };
 
 // Delete Employee
 export const deleteEmployee = (req: Request, res: Response) => {
   const success = deleteEmployeeService(req.params.id);
-  if (!success) return res.status(404).json({ message: "Employee not found" });
-  res.status(200).json({ message: "Employee deleted successfully" });
+  if (!success) return res.status(404).json(errorResponse("Employee not found"));
+  res.status(200).json(successResponse(null, "Employee deleted successfully"));
 };
 
 // Get all employees by Branch
@@ -57,10 +57,10 @@ export const getEmployeesByBranch = (req: Request, res: Response) => {
   const filtered = employees.filter(emp => emp.branchId === branchIdNum); 
 
   if (filtered.length === 0) {
-    return res.status(404).json({ message: "No employees found for this branch" });
+    return res.status(404).json(errorResponse("No employees found for this branch"));
   }
   
-  res.status(200).json(filtered); 
+  res.status(200).json(successResponse(filtered, "Employees retrieved by branch")); 
 };
 
 // Get all employees by Department
@@ -69,7 +69,7 @@ export const getEmployeesByDepartment = (req: Request, res: Response) => {
   const employees = getAllEmployeesService();
   const filtered = employees.filter(emp => emp.department === department); 
   if (filtered.length === 0) {
-    return res.status(404).json({ message: "No employees found for this department" });
+    return res.status(404).json(errorResponse("No employees found for this department"));
   }
-  res.status(200).json(filtered);
+  res.status(200).json(successResponse(filtered, "Employees retrived by department"));
 };
