@@ -7,7 +7,7 @@ import {
   deleteEmployee as deleteEmployeeService 
 } from "../services/employeeService";
 import { successResponse, errorResponse } from "../models/responseModel";
-import { Employee } from "../models/employeeModel";
+import { Employee } from "../services/employeeService";
 
 // Create Employee
 export const createEmployee = (req: Request, res: Response) => {

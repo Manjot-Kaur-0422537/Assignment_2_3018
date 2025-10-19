@@ -4,6 +4,7 @@ export interface Employee {
   position: string;
   branchId: number;
   department: string;
+  email:string;
 }
 
 let employees: Employee[] = [];
