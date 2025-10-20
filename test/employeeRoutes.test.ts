@@ -3,21 +3,30 @@ import app from "../src/app";
 
 describe("Employee API Endpoints", () => {
   let employeeId: string; 
+  let testBranchId: string;
 
   // CREATE
+
   beforeAll(async () => {
-    const response = await request(app).post("/api/v1/employees").send({
+    const branchRes = await request(app).post("/api/v1/branches").send({
+      name: "Main Branch",
+      location: "Toronto",
+      phone: "123-456-7890",
+    });
+
+    testBranchId = branchRes.body.data.id; 
+
+    const employeeRes = await request(app).post("/api/v1/employees").send({
       name: "Lila Spence",
       position: "Loan Coordinator",
       department: "Loans",
       email: "lila.spence@pixell-river.com",
       phone: "204-555-0480",
-      branchId: 4,
+      branchId: testBranchId,
     });
 
-    expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty("status", "success");
-    employeeId = response.body.data.id;
+    expect(employeeRes.status).toBe(201);
+    employeeId = employeeRes.body.data.id;
   });
 
   // GET ALL
@@ -100,8 +109,8 @@ describe("Employee API Additional Endpoints", () => {
   it("should return all employees for a specific department", async () => {
     const response = await request(app).get(`/api/v1/employees/department/${testDepartment}`);
     expect(response.status).toBe(200);
-expect(response.body).toHaveProperty("status", "success");
-    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body).toHaveProperty("status", "success");
+    expect(Array.isArray(response.body.data)).toBe(true);
   });
 
   it("should return 404 if department has no employees", async () => {
