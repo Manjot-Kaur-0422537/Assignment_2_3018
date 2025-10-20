@@ -8,7 +8,8 @@ describe("Employee Service", () => {
       name: "John Doe", 
       position: "Manager",
       branchId: 1,
-      department: "IT" 
+      department: "IT",
+      email: "john@email.com"
     });
     expect(employee.id).toBeDefined();
     expect(employee.name).toBe("John Doe");

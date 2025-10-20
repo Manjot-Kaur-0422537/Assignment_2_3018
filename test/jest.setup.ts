@@ -1,5 +1,5 @@
 // Always mock firebase in every test
-jest.mock("../src/api/v1/config/firebaseConfig", () => ({
+jest.mock("../config/firebaseConfig", () => ({
     auth: {
         verifyIdToken: jest.fn(),
         getUser: jest.fn(),

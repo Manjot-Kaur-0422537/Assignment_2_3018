@@ -14,13 +14,15 @@ describe("Branch Routes", () => {
       phone: "123-456-7890"
     });
     expect(res.status).toBe(201);
-    expect(res.body.name).toBe("Main Branch");
+    expect(res.body).toHaveProperty("status", "success");
+    expect(res.body.data).toHaveProperty("name", "Main Branch");
   });
 
-  it("GET /branches calls getAllBranches controller", async () => {
+  it("GET /branches should return all branches", async () => {
     const res = await request(app).get("/branches");
-    expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-  });
 
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("status", "success");
+    expect(Array.isArray(res.body.data)).toBe(true);
+  });
 });

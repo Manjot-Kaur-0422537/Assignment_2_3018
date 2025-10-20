@@ -16,15 +16,23 @@ describe("Branch Controller", () => {
   it("should create a new branch", () => {
     req.body = { name: "Main Branch",  location: "Toronto" };
     createBranch(req as Request, res as Response);
+
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "Main Branch" })
+      expect.objectContaining({
+        data: expect.objectContaining({ name: "Main Branch" })
+      })
     );
   });
 
   it("should return all branches", () => {
     getAllBranches(req as Request, res as Response);
+
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(expect.any(Array));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+      data: expect.any(Array)
+      })
+    );
   });
 });
