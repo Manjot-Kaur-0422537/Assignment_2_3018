@@ -1,3 +1,11 @@
+import {
+  createDocument,
+  getDocuments,
+  getDocumentById,
+  updateDocument,
+  deleteDocument
+} from "../repositories/firestoreRepository";
+
 export interface Branch {
   id: string;
   name: string;
@@ -19,30 +27,27 @@ export interface UpdateBranchInput {
   phone?: string;
 }
 
-let branches: Branch[] = [];
+const collectionName = "branches";
 
 export const branchService = {
-  create: (data: CreateBranchInput) => {
-    const branch: Branch = { id: Date.now().toString(), ...data };
-    branches.push(branch);
-    return branch;
+  async create(data: CreateBranchInput) {
+    return await createDocument(collectionName, data);
   },
 
-  getAll: () => branches,
-
-  getById: (id: string) => branches.find(b => b.id === id),
-
-  update: (id: string, data: UpdateBranchInput) => {
-    const index = branches.findIndex(b => b.id === id);
-    if (index === -1) return null;
-    branches[index] = { ...branches[index], ...data };
-    return branches[index];
+  async getAll() {
+    return await getDocuments;
   },
 
-  delete: (id: string) => {
-    const index = branches.findIndex(b => b.id === id);
-    if (index === -1) return false;
-    branches.splice(index, 1);
-    return true;
+  async getById(id: string) {
+    return await getDocumentById;
+  },
+
+  async update(id: string, data: UpdateBranchInput) {
+    return await updateDocument(collectionName, id, data);
+  },
+
+  async delete(id: string) {
+    await deleteDocument(collectionName, id);
+    return { message: "Branch deleted successfully" };
   },
 };
