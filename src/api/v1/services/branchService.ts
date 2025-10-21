@@ -13,14 +13,12 @@ export interface Branch {
   phone: string;
 }
 
-// Input type for creating a branch 
 export interface CreateBranchInput {
   name: string;
   address: string;
   phone: string;
 }
 
-// Input type for updating a branch 
 export interface UpdateBranchInput {
   name?: string;
   address?: string;
@@ -31,23 +29,50 @@ const collectionName = "branches";
 
 export const branchService = {
   async create(data: CreateBranchInput) {
-    return await createDocument(collectionName, data);
+    try {
+      return await createDocument(collectionName, data);
+    } catch (error) {
+      console.error("Error creating branch:", error);
+      throw new Error("Failed to create branch");
+    }
   },
 
   async getAll() {
-    return await getDocuments;
+    try {
+      return await getDocuments(collectionName);
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+      throw new Error("Failed to fetch branches");
+    }
   },
 
   async getById(id: string) {
-    return await getDocumentById;
+    try {
+      const branch = await getDocumentById(collectionName, id);
+      if (!branch) throw new Error("Branch not found");
+      return branch;
+    } catch (error) {
+      console.error("Error fetching branch by ID:", error);
+      throw new Error("Failed to fetch branch");
+    }
   },
 
   async update(id: string, data: UpdateBranchInput) {
-    return await updateDocument(collectionName, id, data);
+    try {
+      return await updateDocument(collectionName, id, data);
+    } catch (error) {
+      console.error("Error updating branch:", error);
+      throw new Error("Failed to update branch");
+    }
   },
 
   async delete(id: string) {
-    await deleteDocument(collectionName, id);
-    return { message: "Branch deleted successfully" };
+    try {
+      await deleteDocument(collectionName, id);
+      return { message: "Branch deleted successfully" };
+    } catch (error) {
+      console.error("Error deleting branch:", error);
+      throw new Error("Failed to delete branch");
+    }
   },
 };

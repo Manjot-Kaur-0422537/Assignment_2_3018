@@ -1,25 +1,42 @@
-import { Router } from "express";
-import { 
-  createEmployee, 
-  getAllEmployees, 
-  getEmployeeById, 
-  updateEmployee, 
+import { Router, Request, Response } from "express";
+import {
+  createEmployee,
+  getAllEmployees,
+  getEmployeeById,
+  updateEmployee,
   deleteEmployee,
   getEmployeesByBranch,
-  getEmployeesByDepartment
+  getEmployeesByDepartment,
 } from "../controllers/employeeController";
-import { validate } from "../middleware/validate";
-import { employeeSchema } from "../validation/employeeValidation";
 
-const router = Router();
+const employeeRoutes = Router();
 
-router.post("/", validate(employeeSchema), createEmployee);
-router.get("/", getAllEmployees);
-router.get("/:id", getEmployeeById);
-router.put("/:id", validate(employeeSchema), updateEmployee);
-router.delete("/:id", deleteEmployee);
+employeeRoutes.post("/", (req: Request, res: Response) => {
+  createEmployee(req, res);
+});
 
-router.get("/branch/:branchId", getEmployeesByBranch);
-router.get("/department/:department", getEmployeesByDepartment);
+employeeRoutes.get("/", (req: Request, res: Response) => {
+  getAllEmployees(req, res);
+});
 
-export default router;
+employeeRoutes.get("/:id", (req: Request, res: Response) => {
+  getEmployeeById(req, res);
+});
+
+employeeRoutes.put("/:id", (req: Request, res: Response) => {
+  updateEmployee(req, res);
+});
+
+employeeRoutes.delete("/:id", (req: Request, res: Response) => {
+  deleteEmployee(req, res);
+});
+
+employeeRoutes.get("/branch/:branchId", (req: Request, res: Response) => {
+  getEmployeesByBranch(req, res);
+});
+
+employeeRoutes.get("/department/:department", (req: Request, res: Response) => {
+  getEmployeesByDepartment(req, res);
+});
+
+export default employeeRoutes;

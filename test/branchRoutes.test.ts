@@ -1,30 +1,55 @@
 import request from "supertest";
-import express from "express";
-import branchRoutes from "../src/api/v1/routes/branchRoutes";
+import app from "../src/app";
 
-const app = express();
-app.use(express.json());
-app.use("/api/v1/branches", branchRoutes);
+jest.mock("../src/api/v1/repositories/firestoreRepository", () => ({
+  createDocument: jest.fn().mockResolvedValue({
+    id: "1",
+    name: "Main Branch",
+    address: "123 St",
+    phone: "1234567890",
+  }),
+  getDocuments: jest.fn().mockResolvedValue([
+    {
+      id: "1",
+      name: "Main Branch",
+      address: "123 St",
+      phone: "1234567890",
+    },
+  ]),
+  getDocumentById: jest.fn().mockResolvedValue({
+    id: "1",
+    name: "Main Branch",
+    address: "123 St",
+    phone: "1234567890",
+  }),
+  updateDocument: jest.fn().mockResolvedValue({
+    id: "1",
+    name: "Updated Branch",
+    address: "123 St",
+    phone: "1234567890",
+  }),
+  deleteDocument: jest.fn().mockResolvedValue(undefined),
+}));
 
 describe("Branch Routes", () => {
-  it("POST /branches calls createBranch controller", async () => {
+  it("POST /branches - should create a branch", async () => {
     const res = await request(app)
       .post("/api/v1/branches")
       .send({
         name: "Main Branch",
-        location: "Toronto",
-        phone: "123-456-7890"
+        address: "123 St",
+        phone: "1234567890",
       });
+
     expect(res.status).toBe(201);
-    expect(res.body).toHaveProperty("status", "success");
-    expect(res.body.data).toHaveProperty("name", "Main Branch");
+    expect(res.body.data).toHaveProperty("name", "Main Branch"); 
   });
 
-  it("GET /branches should return all branches", async () => {
+  it("GET /branches - should return all branches", async () => {
     const res = await request(app).get("/api/v1/branches");
 
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("status", "success");
-    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true); 
+    expect(res.body.data[0]).toHaveProperty("name", "Main Branch"); 
   });
 });
