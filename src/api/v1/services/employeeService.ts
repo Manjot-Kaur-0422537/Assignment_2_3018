@@ -1,35 +1,49 @@
+import { db } from "../../../../config/firebaseconfig";
+
 export interface Employee {
-  id: string;
+  id?: string;
   name: string;
   position: string;
   branchId: number;
   department: string;
-  email:string;
+  email: string;
 }
 
-let employees: Employee[] = [];
 
-export const getAllEmployees = () => employees;
-
-export const getEmployeeById = (id: string) =>
-  employees.find((e) => e.id === id);
-
-export const addEmployee = (data: Omit<Employee, "id">) => {
-  const employee: Employee = { id: Date.now().toString(), ...data };
-  employees.push(employee);
-  return employee;
+export const getAllEmployees = async (): Promise<Employee[]> => {
+  const snapshot = await db.collection("employees").get();
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Employee));
 };
 
-export const updateEmployee = (id: string, data: Partial<Omit<Employee, "id">>) => {
-  const index = employees.findIndex((e) => e.id === id);
-  if (index === -1) return null;
-  employees[index] = { ...employees[index], ...data };
-  return employees[index];
+export const getEmployeeById = async (id: string): Promise<Employee | null> => {
+  const doc = await db.collection("employees").doc(id).get();
+  if (!doc.exists) return null;
+  return { id: doc.id, ...doc.data() } as Employee;
 };
 
-export const deleteEmployee = (id: string) => {
-  const index = employees.findIndex((e) => e.id === id);
-  if (index === -1) return false;
-  employees.splice(index, 1);
+
+export const addEmployee = async (data: Omit<Employee, "id">): Promise<Employee> => {
+  const docRef = await db.collection("employees").add(data);
+  return { id: docRef.id, ...data };
+};
+
+
+export const updateEmployee = async (id: string, data: Partial<Omit<Employee, "id">>): Promise<Employee | null> => {
+  const docRef = db.collection("employees").doc(id);
+  const doc = await docRef.get();
+  if (!doc.exists) return null;
+
+  await docRef.update(data);
+  const updatedDoc = await docRef.get();
+  return { id: updatedDoc.id, ...updatedDoc.data() } as Employee;
+};
+
+
+export const deleteEmployee = async (id: string): Promise<boolean> => {
+  const docRef = db.collection("employees").doc(id);
+  const doc = await docRef.get();
+  if (!doc.exists) return false;
+
+  await docRef.delete();
   return true;
 };

@@ -3,7 +3,7 @@ import {
   getDocuments,
   getDocumentById,
   updateDocument,
-  deleteDocument
+  deleteDocument,
 } from "../repositories/firestoreRepository";
 
 export interface Branch {
@@ -28,51 +28,52 @@ export interface UpdateBranchInput {
 const collectionName = "branches";
 
 export const branchService = {
-  async create(data: CreateBranchInput) {
-    try {
-      return await createDocument(collectionName, data);
-    } catch (error) {
-      console.error("Error creating branch:", error);
-      throw new Error("Failed to create branch");
-    }
+  async create(data: CreateBranchInput): Promise<Branch> {
+    const id = await createDocument(collectionName, data);
+    return { id, ...data };
   },
 
-  async getAll() {
-    try {
-      return await getDocuments(collectionName);
-    } catch (error) {
-      console.error("Error fetching branches:", error);
-      throw new Error("Failed to fetch branches");
-    }
+  async getAll(): Promise<Branch[]> {
+    const snapshot = await getDocuments(collectionName);
+    return snapshot.docs
+      .map((doc: any) => {
+        const data = doc.data();
+        if (!data) return null;
+        return { id: doc.id, ...(data as Omit<Branch, "id">) };
+      })
+      .filter(Boolean) as Branch[];
   },
 
-  async getById(id: string) {
-    try {
-      const branch = await getDocumentById(collectionName, id);
-      if (!branch) throw new Error("Branch not found");
-      return branch;
-    } catch (error) {
-      console.error("Error fetching branch by ID:", error);
-      throw new Error("Failed to fetch branch");
-    }
+  async getById(id: string): Promise<Branch | null> {
+    const doc = await getDocumentById(collectionName, id);
+    if (!doc) return null;
+
+    const data = doc.data();
+    if (!data) return null;
+
+    return { id: doc.id, ...(data as Omit<Branch, "id">) };
   },
 
-  async update(id: string, data: UpdateBranchInput) {
-    try {
-      return await updateDocument(collectionName, id, data);
-    } catch (error) {
-      console.error("Error updating branch:", error);
-      throw new Error("Failed to update branch");
-    }
+  async update(id: string, data: UpdateBranchInput): Promise<Branch | null> {
+    const doc = await getDocumentById(collectionName, id);
+    if (!doc) return null;
+
+    await updateDocument(collectionName, id, data);
+
+    const updatedDoc = await getDocumentById(collectionName, id);
+    if (!updatedDoc) return null;
+
+    const updatedData = updatedDoc.data();
+    if (!updatedData) return null;
+
+    return { id: updatedDoc.id, ...(updatedData as Omit<Branch, "id">) };
   },
 
-  async delete(id: string) {
-    try {
-      await deleteDocument(collectionName, id);
-      return { message: "Branch deleted successfully" };
-    } catch (error) {
-      console.error("Error deleting branch:", error);
-      throw new Error("Failed to delete branch");
-    }
+  async delete(id: string): Promise<boolean> {
+    const doc = await getDocumentById(collectionName, id);
+    if (!doc) return false;
+
+    await deleteDocument(collectionName, id);
+    return true;
   },
 };

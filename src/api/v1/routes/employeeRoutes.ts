@@ -8,6 +8,7 @@ import {
   getEmployeesByBranch,
   getEmployeesByDepartment,
 } from "../controllers/employeeController";
+import router from "./branchRoutes";
 
 const employeeRoutes = Router();
 
@@ -17,6 +18,14 @@ employeeRoutes.post("/", (req: Request, res: Response) => {
 
 employeeRoutes.get("/", (req: Request, res: Response) => {
   getAllEmployees(req, res);
+});
+
+employeeRoutes.get("/branch/:branchId", (req: Request, res: Response) => {
+  getEmployeesByBranch(req, res);
+});
+
+employeeRoutes.get("/department/:department", (req: Request, res: Response) => {
+  getEmployeesByDepartment(req, res);
 });
 
 employeeRoutes.get("/:id", (req: Request, res: Response) => {
@@ -31,12 +40,4 @@ employeeRoutes.delete("/:id", (req: Request, res: Response) => {
   deleteEmployee(req, res);
 });
 
-employeeRoutes.get("/branch/:branchId", (req: Request, res: Response) => {
-  getEmployeesByBranch(req, res);
-});
-
-employeeRoutes.get("/department/:department", (req: Request, res: Response) => {
-  getEmployeesByDepartment(req, res);
-});
-
-export default employeeRoutes;
+export default router;
