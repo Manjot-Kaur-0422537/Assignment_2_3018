@@ -51,7 +51,7 @@ export const updateBranch = async (req: Request, res: Response) => {
 // Delete Branch
 export const deleteBranch = async (req: Request, res: Response) => {
   try {
-    const deleted: boolean = await branchService.delete(req.params.id); // ✅ must return boolean
+    const deleted: boolean = await branchService.delete(req.params.id); 
     if (!deleted) {
       return res.status(404).json({ success: false, message: "Branch not found" });
     }
