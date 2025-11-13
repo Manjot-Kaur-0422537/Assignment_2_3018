@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import * as employeeController from "../src/api/v1/controllers/employeeController";
 
-// ✅ Mock the service layer so it doesn't hit Firestore
 jest.mock("../src/api/v1/services/employeeService", () => ({
   addEmployee: jest.fn(),
   getAllEmployees: jest.fn(),

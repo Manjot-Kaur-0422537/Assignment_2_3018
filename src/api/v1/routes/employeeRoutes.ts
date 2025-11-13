@@ -8,7 +8,6 @@ import {
   getEmployeesByBranch,
   getEmployeesByDepartment,
 } from "../controllers/employeeController";
-import router from "./branchRoutes";
 
 const employeeRoutes = Router();
 
@@ -40,4 +39,4 @@ employeeRoutes.delete("/:id", (req: Request, res: Response) => {
   deleteEmployee(req, res);
 });
 
-export default router;
+export default employeeRoutes;
