@@ -1,3 +1,11 @@
+import {
+  createDocument,
+  getDocuments,
+  getDocumentById,
+  updateDocument,
+  deleteDocument,
+} from "../repositories/firestoreRepository";
+
 export interface Branch {
   id: string;
   name: string;
@@ -5,44 +13,67 @@ export interface Branch {
   phone: string;
 }
 
-// Input type for creating a branch 
 export interface CreateBranchInput {
   name: string;
   address: string;
   phone: string;
 }
 
-// Input type for updating a branch 
 export interface UpdateBranchInput {
   name?: string;
   address?: string;
   phone?: string;
 }
 
-let branches: Branch[] = [];
+const collectionName = "branches";
 
 export const branchService = {
-  create: (data: CreateBranchInput) => {
-    const branch: Branch = { id: Date.now().toString(), ...data };
-    branches.push(branch);
-    return branch;
+  async create(data: CreateBranchInput): Promise<Branch> {
+    const id = await createDocument(collectionName, data);
+    return { id, ...data };
   },
 
-  getAll: () => branches,
-
-  getById: (id: string) => branches.find(b => b.id === id),
-
-  update: (id: string, data: UpdateBranchInput) => {
-    const index = branches.findIndex(b => b.id === id);
-    if (index === -1) return null;
-    branches[index] = { ...branches[index], ...data };
-    return branches[index];
+  async getAll(): Promise<Branch[]> {
+    const snapshot = await getDocuments(collectionName);
+    return snapshot.docs
+      .map((doc: any) => {
+        const data = doc.data();
+        if (!data) return null;
+        return { id: doc.id, ...(data as Omit<Branch, "id">) };
+      })
+      .filter(Boolean) as Branch[];
   },
 
-  delete: (id: string) => {
-    const index = branches.findIndex(b => b.id === id);
-    if (index === -1) return false;
-    branches.splice(index, 1);
+  async getById(id: string): Promise<Branch | null> {
+    const doc = await getDocumentById(collectionName, id);
+    if (!doc) return null;
+
+    const data = doc.data();
+    if (!data) return null;
+
+    return { id: doc.id, ...(data as Omit<Branch, "id">) };
+  },
+
+  async update(id: string, data: UpdateBranchInput): Promise<Branch | null> {
+    const doc = await getDocumentById(collectionName, id);
+    if (!doc) return null;
+
+    await updateDocument(collectionName, id, data);
+
+    const updatedDoc = await getDocumentById(collectionName, id);
+    if (!updatedDoc) return null;
+
+    const updatedData = updatedDoc.data();
+    if (!updatedData) return null;
+
+    return { id: updatedDoc.id, ...(updatedData as Omit<Branch, "id">) };
+  },
+
+  async delete(id: string): Promise<boolean> {
+    const doc = await getDocumentById(collectionName, id);
+    if (!doc) return false;
+
+    await deleteDocument(collectionName, id);
     return true;
   },
 };
